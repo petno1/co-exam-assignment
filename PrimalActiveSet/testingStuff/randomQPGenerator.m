@@ -1,5 +1,4 @@
-function [H, g, A, b, C, dl,du, l, u] = v2_RandomQPGenerator(n, density)
-   
+function [H, g, A, b, C, dl, du, l, u] = randomQPGenerator(n, density)   
     m = n/2;
     M = sprand(n, n, density);
     H = M * M' + 0.001 * eye(n); 
