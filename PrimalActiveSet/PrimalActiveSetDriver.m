@@ -1,3 +1,3 @@
-load('n5example.mat')
-PrimalActiveSet(H, g, A, b, C, dl, du, l, u)
+[x,lambda,Wset,it] = PrimalActiveSet(H, g, A, b, C, dl, du, l, u);
+
 

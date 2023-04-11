@@ -72,6 +72,7 @@ while ( ~KKTconditions && (it < maxit) );
         % find minimum lambda
         idlambdaWset = -1;
         minlambdaWset = 0.0;
+        lambdaWset
         nWset = size(Wset,1);
         for i=1:nWset
                if lambdaWset(i) < minlambdaWset 
