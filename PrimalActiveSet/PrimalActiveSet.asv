@@ -1,46 +1,43 @@
-function [xopt,lagrangeopt,Wset,it] = PrimalActiveSet(H, g, A, b, Cbar, dbar, x0)
+function [xopt,lagrangeopt,Wset,it] = PrimalActiveSet(H, g, A, b, C, d, x0)
 
-%% Step 1 - prep the inputs
-[n,~] = size(H);
-[~,m] = size(Cbar);
-[~,j] = size(A);
+%% Step 0 - initialize some variables.
 tol = 1.0e-10;
-x = x0;
-
-%% Step 2 - set up empty working/active sets
-Wset = zeros(0,1);
-IWset = [1:j+m]';
-Wset = union(Wset, 1:j);  % add the integers 1-j to the set
+[n,m] = size(C);
+[~,j] = size(A);
+x=x0;
 lagrangeMultipliers = zeros(m+j,1);
+
+%% Step 1 - set up empty working/active sets.
+Wset = zeros(j+m,1)
+% set all equality constraints to already be active
+Wset(1:j) = 1;
 
 
 
 % QP data
 gk = H*x + g;
-nablaxL = gk - [A Cbar]*lagrangeMultipliers;
-c = [A Cbar]'*x + [b; dbar];                   
+nablaxL = gk - [A C]*lagrangeMultipliers;
+c = [A C]'*x + [b; d];                   
 
 % Check if the initial point is optimal
 kktConditions = (norm(nablaxL,'inf') < tol); 
 
 %% Main loop
-Wset
 maxit = 100;
 it = 0;
-while (~kktConditions && (it < maxit))      
-    Wset
+while (~kktConditions && (it < maxit))
     it = it + 1;
     % Solve equality constrained QP
     % join constraints
-    AC = [A Cbar];
-    Cw = AC(:,Wset);
+    AC = [A C];
+    Cw = AC(:, Wset == 1);
     dw = zeros(size(Cw,2),1);
     [p,lagrangeMultipliers] = EqualityQPsubproblem(H,gk,Cw,dw);
     if(norm(p,'inf')>tol) % p is non-zero
         % find binding constraint (if any)
-        alpha = 0.5;
+        alpha = 0.4;
         idc = -1;
-        nIWset = size(IWset,1);
+        nIWset = sum(Wset == 1);
         for i = j+1:nIWset
             pA = AC(:,IWset(i))'*p;
             if pA < 0.0
@@ -54,10 +51,9 @@ while (~kktConditions && (it < maxit))
         % Take step, update data and working set
         x = x + alpha*p;
         gk = H*x + g;
-        c = [A Cbar]'*x + [b; dbar];                   
+        c = [A C]'*x + [b; d];                   
         if idc > 0
-            Wset = [Wset; IWset(idc)];
-            IWset = [IWset(1:idc-1); IWset(idc+1:end)];
+            Wset = 
         end
     else % p is zero
         % find minimum lambda
