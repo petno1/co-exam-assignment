@@ -9,7 +9,7 @@ clc
 % s.t. A′x + b = 0 
 % dl ≤ C′x ≤ du 
 % l ≤ x ≤ u 
-n=200;
+n=10;
 [H, g, A, b, C, dl, du, l, u] = randomQPGenerator(n,0.5);
 %% Convert dl <= C' x <= cu, l <= x <= u to c(x) = Cbar' x + dbar >= 0
 Cbar = [C -C eye(n,n) -eye(n,n)];

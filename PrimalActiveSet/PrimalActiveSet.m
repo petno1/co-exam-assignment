@@ -24,7 +24,6 @@ c = [A Cbar]'*x + [b; dbar];
 kktConditions = (norm(nablaxL,'inf') < tol); 
 
 %% Main loop
-Wset
 maxit = 100;
 it = 0;
 while (~kktConditions && (it < maxit))      
@@ -38,7 +37,7 @@ while (~kktConditions && (it < maxit))
     [p,lagrangeMultipliers] = EqualityQPsubproblem(H,gk,Cw,dw);
     if(norm(p,'inf')>tol) % p is non-zero
         % find binding constraint (if any)
-        alpha = 0.5;
+        alpha = 1;
         idc = -1;
         nIWset = size(IWset,1);
         for i = j+1:nIWset

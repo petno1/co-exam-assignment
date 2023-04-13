@@ -4,10 +4,7 @@ function [H, g, A, b, C, dl, du, l, u] = randomQPGenerator(n, density)
     H = M * M' + 0.001 * eye(n); 
     g = randn(n, 1); % Generate a random vector g  
     % Generate random matrices A and C
-    % Create a full rank A matrix
-    A = 10*rand(n); 
-    A = 0.5*(A+A')+n*eye(n);
-    A = A(:,1:m); 
+    A = sprandn(n, m, 0.15);    
     b = randn(m,1); 
   
     % Generate random upper and lower bounds
