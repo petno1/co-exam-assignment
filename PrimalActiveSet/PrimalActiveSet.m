@@ -13,8 +13,6 @@ IWset = [1:j+m]';
 Wset = union(Wset, 1:j);  % add the integers 1-j to the set
 lagrangeMultipliers = zeros(m+j,1);
 
-
-
 % QP data
 gk = H*x + g;
 nablaxL = gk - [A Cbar]*lagrangeMultipliers;
@@ -27,7 +25,6 @@ kktConditions = (norm(nablaxL,'inf') < tol);
 maxit = 100;
 it = 0;
 while (~kktConditions && (it < maxit))      
-    Wset
     it = it + 1;
     % Solve equality constrained QP
     % join constraints
