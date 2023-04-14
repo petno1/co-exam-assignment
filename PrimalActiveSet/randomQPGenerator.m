@@ -14,7 +14,7 @@ function [H, g, A, b, C, dl, du, l, u] = randomQPGenerator(n, density)
     l = -ones(n,1)*2.5;
     u = ones(n,1)*2.5;
 
-    C = rand(n, m);
+    C = sprand(n, m, density);
     % Generate random upper and lower bounds
     dl = -m*rand(m,1);
     du = m*rand(m,1);

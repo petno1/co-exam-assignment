@@ -1,6 +1,6 @@
 %% Step 1 - prep the inputs
-n=400;
-[H, g, A, b, C, dl, du, l, u] = randomQPGenerator(n,0.90);
+n=200;
+[H, g, A, b, C, dl, du, l, u] = randomQPGenerator(n,0.50);
 % Convert dl <= C' x <= cu, l <= x <= u to c(x) = Cbar' x + dbar >= 0
 Cbar = [C -C eye(n,n) -eye(n,n)];
 dbar = [-dl; du; -l; u];

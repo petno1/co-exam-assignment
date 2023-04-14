@@ -9,7 +9,7 @@ x = x0;
 
 %% Step 2 - set up empty working/active sets
 Wset = zeros(0,1);
-IWset = [1:j+m]';
+IWset = [1:j+m]';         
 Wset = union(Wset, 1:j);  % add the integers 1-j to the set
 lagrangeMultipliers = zeros(m+j,1);
 
@@ -34,7 +34,7 @@ while (~kktConditions && (it < maxit))
     [p,lagrangeMultipliers] = EqualityQPsubproblem(H,gk,Cw,dw);
     if(norm(p,'inf')>tol) % p is non-zero
         % find binding constraint (if any)
-        alpha = 1;
+        alpha = 0.5;
         idc = -1;
         nIWset = size(IWset,1);
         for i = j+1:nIWset
@@ -79,7 +79,7 @@ while (~kktConditions && (it < maxit))
         end
     end
 end
-
+it
 if ~kktConditions
     xopt = [];
     lagrangeopt = [];
