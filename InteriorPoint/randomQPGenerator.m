@@ -1,5 +1,5 @@
 function [H, g, A, b, C, dl, du, l, u] = randomQPGenerator(n, density)   
-    m = n/2;
+    m = 2;
     M = sprand(n, n, density);
     H = M * M' + 0.001 * eye(n); 
     g = randn(n, 1); % Generate a random vector g  

@@ -37,7 +37,7 @@ Converged = (norm(rL,inf) <= tol) && ...
             (norm(rC,inf) <= tol) && ...
             (abs(s) <= tol);
 %%       
-max_iter = 200;
+max_iter = 50;
 iter = 0;
 hist = [];
 
@@ -58,58 +58,38 @@ while ~Converged && (iter<max_iter)
     ds_affine = -(Z\rSZ)-(Z\(S*dz_affine));
 
    % Calculate alpha
-    affineDualGap = 1;
-    idelta_x_z = find(dz_affine<0);
-
-    if (isempty(idelta_x_z) == 0)
-        affineDualGap = min(affineDualGap, min(-z(idelta_x_z)./dz_affine(idelta_x_z)));
-    end
-    idelta_x_s = find(ds_affine<0);
-    if (isempty(idelta_x_s) == 0)
-        affineDualGap = min(affineDualGap, min(-s(idelta_x_s)./ds_affine(idelta_x_s)));
-    end
+    dZS = [ dz_affine ; ds_affine ] ;
+    alphas = (-[z; s]./dZS) ;
+    affineAlpha = min([1;alphas(dZS<0)]);
 
     %% Duality gap and centering parameter
-    affineDualGap = ((z+affineDualGap*dz_affine)'*(s+affineDualGap*ds_affine))/(m);
-    sigma = (affineDualGap./dualGap)^3;
+    affineDualGap = (((z+affineAlpha*dz_affine)'*(s+affineAlpha*ds_affine)))/(m);
+    sigma = (affineDualGap./dualGap)^3
 
     %% Affine-Centering-Correction Direction
     rSZ_bar = rSZ + (ds_affine.*dz_affine.*e) - (affineDualGap*sigma.*e);
     rl_bar = rL- C*(S\Z)*(rC-Z\rSZ_bar);
 
-    [L,D,p] = ldl(KKT,'vector'); 
 
-    rhs = -[rl_bar ; rA];
-    solution(p) = L'\(D\(L\rhs(p)));
+    rhs2 = -[rl_bar ; rA];
+    solution(p) = L'\(D\(L\rhs2(p)));
 
     dx = solution(1:length(x))';
     dy = solution(length(x)+1:length(x)+length(y))';
     
     dz = -(S\Z)*C'*dx+(S\Z)*(rC-Z\rSZ_bar);
     ds = -(Z\rSZ_bar)-(Z\(S*dz));
-
-    dZS = [dz;ds];
     
     % Update alpha
-    alpha = 1;
-    idelta_x_z = find(dz<0);
-    
-    if (isempty(idelta_x_z) == 0)
-        alpha = min(alpha, min(-z(idelta_x_z)./dz(idelta_x_z)));
-    end
-
-    idelta_x_s = find(ds<0);
-
-    if (isempty(idelta_x_s) == 0)
-        alpha = min(alpha, min(-s(idelta_x_s)./ds(idelta_x_s)));
-    end
+    dZS = [ dz ; ds ] ;
+    alphas = (-[z; s]./dZS) ;
+    alpha = min([1;alphas(dZS<0)]);
 
     % Update of position
     x = x+eta*alpha*dx;
     y = y+eta*alpha*dy;
     z = z+eta*alpha*dz;
     s = s+eta*alpha*ds;
-
 
     S = diag(s);
     Z = diag(z);
