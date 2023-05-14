@@ -1,0 +1,6 @@
+[H, g, A, b] = GenerateRandomEQP(5,0.15);
+
+[x3] = EQPsolver(H,g,A,b,"LDLsparse")
+0.5*x3'*H*x3+g'*x3
+
+[x_true, fval_true] = quadprog(H,g',[],[],A,b)

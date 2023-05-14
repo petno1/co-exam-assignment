@@ -1,4 +1,4 @@
-function [K,d] = constructKKTSystem(H,g,A,b)
+function [K,d] = sparseConstructKKTSystem(H,g,A,b)
 
     %   Inputs:
     %   H: n-by-n symmetric matrix of quadratic coefficients
@@ -8,7 +8,7 @@ function [K,d] = constructKKTSystem(H,g,A,b)
     
     [m, ~] = size(A);
     
-    K = [H, -A'; -A, zeros(m, m)];
-    d = [-g; -b];
+    K = sparse([H, -A'; -A, zeros(m, m)]);
+    d = sparse([-g; -b]);
 
 end
