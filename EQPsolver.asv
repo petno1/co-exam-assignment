@@ -9,7 +9,7 @@ function [x, lambda] = EQPsolver(H, g, A, b, type)
     end
 
      if strcmp(type, 'LDLsparse')
-        [K, d] = sparseConstructKKTSystem(H, g, A, b);
+        [K, d] = constructKKTSystem(H, g, A, b);
         [L,D,p] = ldl(K,'vector');
         solution(p) = L'\(D\(L\d(p)));
         x = solution(1:n)';
@@ -43,15 +43,18 @@ function [x, lambda] = EQPsolver(H, g, A, b, type)
     end
 
     if strcmp(type, "NullSpace")
-        [Q,R_bar] = qr(A');
-        m = size(R_bar,2);
-        Q1 = Q(:,1:m);
-        Q2 = Q(:,m+1:end);
-        R = R_bar(1:m,1:m);
-        xy = R'\b;
-        xz = (Q2'*H*Q2)\(-Q2'*(H*Q1*xy+g));
-        x = Q1*xy+Q2*xz;
-        lambda = R\(Q1'*(H*x+g));
+        [~,m] = size(A);
+        [Q,R] = qr(A, 'vector') ;
+        range = Q( : , 1 :m) ;
+        null = Q( : ,m+1:n) ;
+        Y = (R'\b) ;
+        Qnt = null';
+        pre = Qnt*H*null ;
+        L = chol ( pre ) ;
+        mu=L'\(-Qnt*(H*range*Y+g) ) ;
+        Z=L\mu;
+        x = range*Y+null*Z;
+        lambda = R\Qrange'*( g+H*x);
     end
 
 end

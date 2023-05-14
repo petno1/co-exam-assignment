@@ -13,7 +13,8 @@ function [H, g, A, b] = GenerateRandomEQP(n, density)
 
    KKT = [H, -A'; -A, zeros(m, m)];
    solution = -KKT * [x_random; lambda_random];
-   g = -solution ( 1 : n);
+   g = -solution (1 : n);
+   size(g)
    b = -solution (n+1:end);
 
 end 
